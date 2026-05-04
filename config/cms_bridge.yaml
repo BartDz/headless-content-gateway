@@ -1,0 +1,32 @@
+adapters:
+  wordpress:
+    base_url: "%env(WORDPRESS_BASE_URL)%"
+  strapi:
+    base_url: "%env(STRAPI_BASE_URL)%"
+  contentful:
+    space_id: "%env(CONTENTFUL_SPACE_ID)%"
+    access_token: "%env(CONTENTFUL_TOKEN)%"
+  storyblok:
+    access_token: "%env(STORYBLOK_TOKEN)%"
+
+content_types:
+  article:
+    adapter: wordpress
+    cache_ttl: 3600
+    transformers:
+      - markdown_to_html
+      - image_url_rewriter
+    field_map:
+      title: title.rendered
+      body: content.rendered
+      slug: slug
+      publishedAt: date
+  post:
+    adapter: strapi
+    cache_ttl: 1800
+    transformers: []
+    field_map:
+      title: data.attributes.title
+      body: data.attributes.content
+      slug: data.attributes.slug
+      publishedAt: data.attributes.publishedAt
