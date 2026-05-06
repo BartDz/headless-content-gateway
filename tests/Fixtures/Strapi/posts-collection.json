@@ -1,0 +1,30 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "attributes": {
+        "title": "Hello Strapi",
+        "content": "<p>Content.</p>",
+        "slug": "hello-strapi",
+        "publishedAt": "2024-01-15T10:00:00.000Z"
+      }
+    },
+    {
+      "id": 2,
+      "attributes": {
+        "title": "Second Strapi",
+        "content": "<p>More.</p>",
+        "slug": "second-strapi",
+        "publishedAt": "2024-01-16T10:00:00.000Z"
+      }
+    }
+  ],
+  "meta": {
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "pageCount": 1,
+      "total": 2
+    }
+  }
+}

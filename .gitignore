@@ -1,5 +1,6 @@
 
 ###> symfony/framework-bundle ###
+/.env
 /.env.local
 /.env.local.php
 /.env.*.local
@@ -11,5 +12,6 @@
 
 ###> phpunit/phpunit ###
 /phpunit.xml
+!/phpunit.xml.dist
 /.phpunit.cache/
 ###< phpunit/phpunit ###

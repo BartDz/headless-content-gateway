@@ -12,5 +12,6 @@ class ContentCollection
         public readonly int $total,
         public readonly int $page,
         public readonly int $limit,
-    ) {}
+    ) {
+    }
 }

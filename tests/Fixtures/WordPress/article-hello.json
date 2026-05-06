@@ -1,11 +1,13 @@
-{
-  "id": 1,
-  "slug": "hello-world",
-  "date": "2024-01-15T10:00:00",
-  "title": {"rendered": "Hello World"},
-  "content": {"rendered": "<p>This is the post content.</p>"},
-  "excerpt": {"rendered": "<p>Excerpt.</p>"},
-  "type": "post",
-  "status": "publish",
-  "link": "http://localhost:8081/hello-world"
-}
+[
+  {
+    "id": 1,
+    "slug": "hello-world",
+    "date": "2024-01-15T10:00:00",
+    "title": {"rendered": "Hello World"},
+    "content": {"rendered": "<p>This is the post content.</p>"},
+    "excerpt": {"rendered": "<p>Excerpt.</p>"},
+    "type": "post",
+    "status": "publish",
+    "link": "http://localhost:8081/hello-world"
+  }
+]

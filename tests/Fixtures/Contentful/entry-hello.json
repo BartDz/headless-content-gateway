@@ -1,0 +1,17 @@
+{
+  "sys": {"type": "Array"},
+  "total": 1,
+  "skip": 0,
+  "limit": 1,
+  "items": [
+    {
+      "sys": {"id": "abc123"},
+      "fields": {
+        "title": {"en-US": "Hello Contentful"},
+        "body": {"en-US": "Contentful body text."},
+        "slug": {"en-US": "hello-contentful"},
+        "publishedAt": {"en-US": "2024-01-15T10:00:00Z"}
+      }
+    }
+  ]
+}

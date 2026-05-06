@@ -1,0 +1,26 @@
+{
+  "stories": [
+    {
+      "id": 1,
+      "slug": "hello-storyblok",
+      "published_at": "2024-01-15T10:00:00.000Z",
+      "content": {
+        "component": "article",
+        "title": "Hello Storyblok",
+        "body": "Body 1."
+      }
+    },
+    {
+      "id": 2,
+      "slug": "second-story",
+      "published_at": "2024-01-16T10:00:00.000Z",
+      "content": {
+        "component": "article",
+        "title": "Second Story",
+        "body": "Body 2."
+      }
+    }
+  ],
+  "total": 2,
+  "per_page": 10
+}

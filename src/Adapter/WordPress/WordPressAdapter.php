@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Adapter\WordPress;
 
 use App\Adapter\CmsAdapterInterface;
@@ -15,11 +17,12 @@ class WordPressAdapter implements CmsAdapterInterface
     public function __construct(
         private readonly HttpClientInterface $client,
         private readonly string $baseUrl,
-    ) {}
+    ) {
+    }
 
     public function supports(string $adapterName): bool
     {
-        return $adapterName === 'wordpress';
+        return 'wordpress' === $adapterName;
     }
 
     public function fetchEntry(string $type, string $slug, string $locale): ContentEntry
@@ -30,7 +33,7 @@ class WordPressAdapter implements CmsAdapterInterface
             ]);
             $data = $response->toArray();
         } catch (\Throwable $e) {
-            throw new AdapterException("WordPress request failed: " . $e->getMessage(), 0, $e);
+            throw new AdapterException('WordPress request failed: '.$e->getMessage(), 0, $e);
         }
 
         if (empty($data)) {
@@ -53,11 +56,11 @@ class WordPressAdapter implements CmsAdapterInterface
             $headers = $response->getHeaders();
             $total = (int) ($headers['x-wp-total'][0] ?? count($data));
         } catch (\Throwable $e) {
-            throw new AdapterException("WordPress request failed: " . $e->getMessage(), 0, $e);
+            throw new AdapterException('WordPress request failed: '.$e->getMessage(), 0, $e);
         }
 
         return new ContentCollection(
-            entries: array_map(fn(array $item) => $this->normalize($item, $type), $data),
+            entries: array_map(fn (array $item) => $this->normalize($item, $type), $data),
             total: $total,
             page: $query->page,
             limit: $query->limit,

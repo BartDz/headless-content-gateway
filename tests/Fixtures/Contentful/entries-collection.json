@@ -1,0 +1,26 @@
+{
+  "sys": {"type": "Array"},
+  "total": 2,
+  "skip": 0,
+  "limit": 10,
+  "items": [
+    {
+      "sys": {"id": "abc123"},
+      "fields": {
+        "title": {"en-US": "Hello Contentful"},
+        "body": {"en-US": "Contentful body text."},
+        "slug": {"en-US": "hello-contentful"},
+        "publishedAt": {"en-US": "2024-01-15T10:00:00Z"}
+      }
+    },
+    {
+      "sys": {"id": "def456"},
+      "fields": {
+        "title": {"en-US": "Second Entry"},
+        "body": {"en-US": "Body 2."},
+        "slug": {"en-US": "second-entry"},
+        "publishedAt": {"en-US": "2024-01-16T10:00:00Z"}
+      }
+    }
+  ]
+}

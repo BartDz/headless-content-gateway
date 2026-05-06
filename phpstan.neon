@@ -1,0 +1,9 @@
+parameters:
+    level: 6
+    paths:
+        - src
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # missingType.iterableValue: untyped array parameters/returns throughout
+        # adapters and model classes — a dedicated type-annotation pass is needed.
+        - identifier: missingType.iterableValue

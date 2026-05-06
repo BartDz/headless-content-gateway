@@ -13,6 +13,8 @@
 
 pest()->extend(Tests\TestCase::class)->in('Feature');
 
+pest()->extend(Symfony\Bundle\FrameworkBundle\Test\WebTestCase::class)->in('Functional');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations

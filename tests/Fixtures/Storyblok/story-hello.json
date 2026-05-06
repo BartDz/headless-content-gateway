@@ -1,0 +1,15 @@
+{
+  "story": {
+    "id": 1,
+    "uuid": "uuid-hello",
+    "name": "Hello Storyblok",
+    "slug": "hello-storyblok",
+    "full_slug": "en/hello-storyblok",
+    "published_at": "2024-01-15T10:00:00.000Z",
+    "content": {
+      "component": "article",
+      "title": "Hello Storyblok",
+      "body": "Storyblok body content."
+    }
+  }
+}

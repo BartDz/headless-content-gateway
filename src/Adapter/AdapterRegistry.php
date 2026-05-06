@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Adapter;
 
 use App\Adapter\Exception\AdapterNotFoundException;
@@ -11,7 +13,8 @@ class AdapterRegistry
     public function __construct(
         #[AutowireIterator('app.cms_adapter')]
         private readonly iterable $adapters,
-    ) {}
+    ) {
+    }
 
     public function get(string $adapterName): CmsAdapterInterface
     {

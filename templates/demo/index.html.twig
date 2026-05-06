@@ -1,0 +1,144 @@
+{% extends 'base.html.twig' %}
+{% block title %}CMS Gateway Demo{% endblock %}
+{% block body %}
+<h1 class="uk-heading-medium">CMS Gateway Demo</h1>
+
+<div class="uk-card uk-card-default uk-card-body uk-margin">
+    <h3 class="uk-card-title">Adapter Health</h3>
+    <div id="health-badges" class="uk-flex uk-flex-wrap uk-grid-small" uk-grid>
+        <span class="uk-badge" style="background:#999">Loading...</span>
+    </div>
+</div>
+
+<div class="uk-card uk-card-default uk-card-body uk-margin">
+    <h3 class="uk-card-title">Content Entries</h3>
+    <div class="uk-flex uk-grid-small uk-margin-bottom" uk-grid>
+        <div>
+            <label class="uk-form-label">Content Type</label>
+            <select id="content-type-select" class="uk-select uk-form-width-medium">
+                <option value="article">article</option>
+                <option value="post">post</option>
+            </select>
+        </div>
+        <div class="uk-flex-bottom">
+            <button id="load-btn" class="uk-button uk-button-primary">Load Entries</button>
+        </div>
+    </div>
+    <div id="cache-status" class="uk-margin-small-bottom"></div>
+    <div id="entries-container">
+        <p class="uk-text-muted">Click "Load Entries" to fetch content.</p>
+    </div>
+</div>
+
+<div class="uk-card uk-card-default uk-card-body uk-margin">
+    <h3 class="uk-card-title">Cache Invalidation</h3>
+    <div class="uk-flex uk-grid-small" uk-grid>
+        <div>
+            <label class="uk-form-label">Adapter</label>
+            <select id="webhook-adapter" class="uk-select uk-form-width-small">
+                <option value="wordpress">wordpress</option>
+                <option value="strapi">strapi</option>
+            </select>
+        </div>
+        <div class="uk-flex-bottom">
+            <button id="invalidate-btn" class="uk-button uk-button-danger">Invalidate Cache</button>
+        </div>
+    </div>
+</div>
+
+<script>
+async function loadHealth() {
+    const res = await fetch('/health');
+    const data = await res.json();
+    const container = document.getElementById('health-badges');
+    container.replaceChildren();
+    Object.entries(data.adapters).forEach(([name, status]) => {
+        const span = document.createElement('span');
+        span.className = 'uk-badge uk-margin-small-right';
+        span.style.background = status === 'up' ? '#32d296' : '#f0506e';
+        span.textContent = name + ': ' + status;
+        container.appendChild(span);
+    });
+}
+
+async function loadEntries() {
+    const type = document.getElementById('content-type-select').value;
+    const res = await fetch('/content/' + encodeURIComponent(type));
+    const cacheStatus = res.headers.get('X-Cache') || 'MISS';
+
+    const cacheContainer = document.getElementById('cache-status');
+    cacheContainer.replaceChildren();
+    const cacheBadge = document.createElement('span');
+    cacheBadge.className = 'uk-badge';
+    cacheBadge.style.background = cacheStatus === 'HIT' ? '#32d296' : '#1e87f0';
+    cacheBadge.textContent = 'Cache: ' + cacheStatus;
+    cacheContainer.appendChild(cacheBadge);
+
+    const data = await res.json();
+    const container = document.getElementById('entries-container');
+    container.replaceChildren();
+    const entries = Array.isArray(data) ? data : (data['hydra:member'] ?? []);
+
+    if (entries.length === 0) {
+        const p = document.createElement('p');
+        p.className = 'uk-text-muted';
+        p.textContent = 'No entries found.';
+        container.appendChild(p);
+        return;
+    }
+
+    const table = document.createElement('table');
+    table.className = 'uk-table uk-table-striped';
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    ['Slug', 'Title', 'Locale'].forEach(label => {
+        const th = document.createElement('th');
+        th.textContent = label;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    entries.forEach(e => {
+        const tr = document.createElement('tr');
+
+        const tdSlug = document.createElement('td');
+        tdSlug.textContent = e.slug ?? '';
+        tr.appendChild(tdSlug);
+
+        const tdTitle = document.createElement('td');
+        tdTitle.textContent = e.fields?.title ?? '-';
+        tr.appendChild(tdTitle);
+
+        const tdLocale = document.createElement('td');
+        tdLocale.textContent = e.locale ?? '';
+        tr.appendChild(tdLocale);
+
+        tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    container.appendChild(table);
+}
+
+document.getElementById('load-btn').addEventListener('click', loadEntries);
+
+document.getElementById('invalidate-btn').addEventListener('click', async () => {
+    const adapter = document.getElementById('webhook-adapter').value;
+    const res = await fetch('/webhooks/' + encodeURIComponent(adapter), {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'X-Webhook-Secret': 'demo'},
+        body: JSON.stringify({}),
+    });
+    const data = await res.json();
+    UIkit.notification({
+        message: 'Invalidated: ' + JSON.stringify(data),
+        status: res.ok ? 'success' : 'danger',
+        timeout: 3000,
+    });
+});
+
+loadHealth();
+</script>
+{% endblock %}

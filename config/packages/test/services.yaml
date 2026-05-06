@@ -1,0 +1,9 @@
+services:
+    App\Adapter\WordPress\WordPressAdapter:
+        public: true
+    App\Adapter\Strapi\StrapiAdapter:
+        public: true
+    App\Adapter\Contentful\ContentfulAdapter:
+        public: true
+    App\Adapter\Storyblok\StoryblokAdapter:
+        public: true

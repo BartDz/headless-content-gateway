@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: redis, intl
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Copy env
+        run: cp .env.example .env
+
+      - name: Run tests
+        run: ./vendor/bin/pest --exclude-group=integration
+
+      - name: Static analysis
+        run: ./vendor/bin/phpstan analyse --no-progress
+
+      - name: Code style check
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff

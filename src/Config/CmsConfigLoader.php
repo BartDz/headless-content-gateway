@@ -1,16 +1,13 @@
 <?php
-declare(strict_types=1);
-namespace App\Config;
 
-use Symfony\Component\Yaml\Yaml;
+declare(strict_types=1);
+
+namespace App\Config;
 
 class CmsConfigLoader
 {
-    private array $config;
-
-    public function __construct(private readonly string $projectDir)
+    public function __construct(private readonly array $config)
     {
-        $this->config = Yaml::parseFile($projectDir . '/config/cms_bridge.yaml');
     }
 
     public function getAdapterConfig(string $adapterName): array
@@ -21,14 +18,15 @@ class CmsConfigLoader
     public function getContentType(string $typeName): ContentTypeConfig
     {
         $ct = $this->config['content_types'][$typeName] ?? null;
-        if ($ct === null) {
+        if (null === $ct) {
             throw new \InvalidArgumentException("Unknown content type: $typeName");
         }
+
         return new ContentTypeConfig(
             name: $typeName,
             adapter: $ct['adapter'],
-            cacheTtl: $ct['cache_ttl'] ?? 3600,
-            transformers: $ct['transformers'] ?? [],
+            cacheTtl: $ct['cache_ttl'],
+            transformers: $ct['transformers'],
             fieldMap: $ct['field_map'] ?? [],
         );
     }

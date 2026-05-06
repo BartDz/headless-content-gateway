@@ -1,26 +1,57 @@
-# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
-
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-# See also https://symfony.com/doc/current/service_container/import.html
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
-parameters:
-
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
+        public: false
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Model/'
+            - '../src/Kernel.php'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    # Adapter services - must have app.cms_adapter tag for AdapterRegistry
+    App\Adapter\WordPress\WordPressAdapter:
+        arguments:
+            $client: '@http_client'
+            $baseUrl: '%env(WORDPRESS_BASE_URL)%'
+        tags:
+            - { name: 'app.cms_adapter' }
+
+    App\Adapter\Strapi\StrapiAdapter:
+        arguments:
+            $client: '@http_client'
+            $baseUrl: '%env(STRAPI_BASE_URL)%'
+        tags:
+            - { name: 'app.cms_adapter' }
+
+    App\Adapter\Contentful\ContentfulAdapter:
+        arguments:
+            $client: '@http_client'
+            $spaceId: '%env(CONTENTFUL_SPACE_ID)%'
+            $accessToken: '%env(CONTENTFUL_TOKEN)%'
+        tags:
+            - { name: 'app.cms_adapter' }
+
+    App\Adapter\Storyblok\StoryblokAdapter:
+        arguments:
+            $client: '@http_client'
+            $accessToken: '%env(STORYBLOK_TOKEN)%'
+        tags:
+            - { name: 'app.cms_adapter' }
+
+    # Cache - use TagAware pool
+    App\Cache\ContentCacheManager:
+        arguments:
+            $cache: '@cache.app.taggable'
+
+    # Config loader
     App\Config\CmsConfigLoader:
         arguments:
-            $projectDir: '%kernel.project_dir%'
+            $config: '%cms_bridge.config%'
+
+    # Image URL rewriter needs base URL
+    App\Transformer\ImageUrlRewriter:
+        arguments:
+            $baseUrl: '%env(WORDPRESS_BASE_URL)%'

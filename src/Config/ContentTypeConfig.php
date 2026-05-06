@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Config;
 
 class ContentTypeConfig
@@ -10,5 +12,6 @@ class ContentTypeConfig
         public readonly int $cacheTtl,
         public readonly array $transformers,
         public readonly array $fieldMap,
-    ) {}
+    ) {
+    }
 }
