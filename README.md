@@ -77,6 +77,18 @@ content_types:
 
 Once you finish migrating articles - change `wordpress` to `storyblok` in one line.
 
+Alternatively, use `fallback_adapters` to let the gateway handle it automatically - no manual tracking needed:
+
+```yaml
+content_types:
+  article:
+    adapter: storyblok        # try new CMS first
+    fallback_adapters:
+      - wordpress             # fall back to old CMS if slug not found yet
+```
+
+Articles already migrated to Storyblok are served from there. Articles not yet migrated return 404 from Storyblok, so the gateway automatically falls back to WordPress. Migrate at your own pace - the site stays up the whole time.
+
 ### Migration steps
 
 1. Run the gateway (see "Quick start" below)
@@ -222,6 +234,8 @@ All routing logic lives in `config/cms_bridge.yaml` - no PHP changes needed to a
 content_types:
   article:
     adapter: wordpress
+    fallback_adapters:       # optional - tried in order if primary returns 404
+      - storyblok
     cache_ttl: 3600
     transformers:
       - markdown_to_html
@@ -239,6 +253,8 @@ content_types:
       body: fields.description
       slug: fields.slug
 ```
+
+`fallback_adapters` is optional and defaults to empty (no fallback). When set, the gateway tries each adapter in sequence — first adapter to return a result wins. If all return 404, the gateway returns 404 to the client.
 
 ## Tests
 

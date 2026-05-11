@@ -7,6 +7,7 @@ namespace App\Api\Provider;
 use ApiPlatform\Metadata\Operation;
 use ApiPlatform\State\ProviderInterface;
 use App\Adapter\AdapterRegistry;
+use App\Adapter\Exception\ContentNotFoundException;
 use App\Config\CmsConfigLoader;
 use App\Locale\LocaleFallbackResolver;
 use App\Model\ContentCollection;
@@ -28,7 +29,6 @@ class ContentCollectionProvider implements ProviderInterface
     {
         $contentType = $uriVariables['contentType'];
         $typeConfig = $this->configLoader->getContentType($contentType);
-        $adapter = $this->registry->get($typeConfig->adapter);
 
         $request = $context['request'] ?? null;
         $locale = $this->localeResolver->resolve($request?->headers->get('Accept-Language') ?? 'en')[0];
@@ -39,7 +39,22 @@ class ContentCollectionProvider implements ProviderInterface
             limit: (int) ($request?->query->get('limit') ?? 10),
         );
 
-        $collection = $adapter->fetchCollection($contentType, $query);
+        $adapterNames = [$typeConfig->adapter, ...$typeConfig->fallbackAdapters];
+
+        $collection = null;
+        foreach ($adapterNames as $adapterName) {
+            try {
+                $adapter = $this->registry->get($adapterName);
+                $collection = $adapter->fetchCollection($contentType, $query);
+                break;
+            } catch (ContentNotFoundException) {
+                continue;
+            }
+        }
+
+        if (null === $collection) {
+            $collection = new ContentCollection(entries: [], total: 0, page: $query->page, limit: $query->limit);
+        }
 
         $request?->attributes->set('_cache_hit', false);
 

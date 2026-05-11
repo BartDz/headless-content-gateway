@@ -12,6 +12,7 @@ class ContentTypeConfig
         public readonly int $cacheTtl,
         public readonly array $transformers,
         public readonly array $fieldMap,
+        public readonly array $fallbackAdapters = [],
     ) {
     }
 }

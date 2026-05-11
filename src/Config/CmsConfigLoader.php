@@ -28,6 +28,7 @@ class CmsConfigLoader
             cacheTtl: $ct['cache_ttl'],
             transformers: $ct['transformers'],
             fieldMap: $ct['field_map'] ?? [],
+            fallbackAdapters: $ct['fallback_adapters'] ?? [],
         );
     }
 

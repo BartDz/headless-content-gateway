@@ -12,6 +12,8 @@ adapters:
 content_types:
   article:
     adapter: wordpress
+    # fallback_adapters:     # uncomment to enable gradual migration — tried in order if primary returns 404
+    #   - storyblok
     cache_ttl: 3600
     transformers:
       - markdown_to_html

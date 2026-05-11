@@ -8,7 +8,7 @@ use App\Model\ContentEntry;
 use App\Model\ContentCollection;
 use App\Model\ContentQuery;
 
-function makeAdapter(string $name): CmsAdapterInterface
+function makeSimpleAdapter(string $name): CmsAdapterInterface
 {
     return new class($name) implements CmsAdapterInterface {
         public function __construct(private string $name) {}
@@ -23,23 +23,23 @@ function makeAdapter(string $name): CmsAdapterInterface
 }
 
 it('resolves correct adapter by name', function () {
-    $registry = new AdapterRegistry([makeAdapter('wordpress'), makeAdapter('strapi')]);
+    $registry = new AdapterRegistry([makeSimpleAdapter('wordpress'), makeSimpleAdapter('strapi')]);
     $adapter = $registry->get('wordpress');
     expect($adapter->supports('wordpress'))->toBeTrue();
 });
 
 it('returns different adapters for different names', function () {
-    $registry = new AdapterRegistry([makeAdapter('wordpress'), makeAdapter('strapi')]);
+    $registry = new AdapterRegistry([makeSimpleAdapter('wordpress'), makeSimpleAdapter('strapi')]);
     expect($registry->get('strapi')->supports('strapi'))->toBeTrue();
 });
 
 it('throws AdapterNotFoundException for unknown adapter', function () {
-    $registry = new AdapterRegistry([makeAdapter('wordpress')]);
+    $registry = new AdapterRegistry([makeSimpleAdapter('wordpress')]);
     $registry->get('contentful');
 })->throws(AdapterNotFoundException::class, 'No adapter found for: contentful');
 
 it('returns first matching adapter', function () {
-    $registry = new AdapterRegistry([makeAdapter('wordpress'), makeAdapter('wordpress')]);
+    $registry = new AdapterRegistry([makeSimpleAdapter('wordpress'), makeSimpleAdapter('wordpress')]);
     $adapter = $registry->get('wordpress');
     expect($adapter)->toBeInstanceOf(CmsAdapterInterface::class);
 });

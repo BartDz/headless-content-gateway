@@ -33,26 +33,29 @@ class ContentItemProvider implements ProviderInterface
         $slug = $uriVariables['slug'];
 
         $typeConfig = $this->configLoader->getContentType($contentType);
-        $adapter = $this->registry->get($typeConfig->adapter);
+        $adapterNames = [$typeConfig->adapter, ...$typeConfig->fallbackAdapters];
 
         $request = $context['request'] ?? null;
         $locales = $this->localeResolver->resolve($request?->headers->get('Accept-Language') ?? 'en');
 
         foreach ($locales as $locale) {
-            try {
-                $entry = $this->cache->get(
-                    $typeConfig->adapter,
-                    $contentType,
-                    $slug,
-                    $locale,
-                    fn () => $adapter->fetchEntry($contentType, $slug, $locale),
-                    $typeConfig->cacheTtl,
-                );
-                $request?->attributes->set('_cache_hit', $this->cache->wasLastRequestCacheHit());
+            foreach ($adapterNames as $adapterName) {
+                try {
+                    $adapter = $this->registry->get($adapterName);
+                    $entry = $this->cache->get(
+                        $adapterName,
+                        $contentType,
+                        $slug,
+                        $locale,
+                        fn () => $adapter->fetchEntry($contentType, $slug, $locale),
+                        $typeConfig->cacheTtl,
+                    );
+                    $request?->attributes->set('_cache_hit', $this->cache->wasLastRequestCacheHit());
 
-                return $this->pipeline->transform($entry, $typeConfig->transformers);
-            } catch (ContentNotFoundException) {
-                continue;
+                    return $this->pipeline->transform($entry, $typeConfig->transformers);
+                } catch (ContentNotFoundException) {
+                    continue;
+                }
             }
         }
 
