@@ -1,0 +1,12 @@
+{
+  "result": {
+    "_id": "abc123",
+    "_type": "article",
+    "_createdAt": "2026-05-05T10:00:00Z",
+    "title": "Hello Sanity",
+    "body": "Sanity body text.",
+    "slug": {
+      "current": "hello-sanity"
+    }
+  }
+}

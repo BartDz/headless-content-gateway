@@ -41,6 +41,15 @@ services:
         tags:
             - { name: 'app.cms_adapter' }
 
+    App\Adapter\Sanity\SanityAdapter:
+        arguments:
+            $client: '@http_client'
+            $projectId: '%env(SANITY_PROJECT_ID)%'
+            $dataset: '%env(default::SANITY_DATASET)%'
+            $apiToken: '%env(default::SANITY_TOKEN)%'
+        tags:
+            - { name: 'app.cms_adapter' }
+
     # Cache - use TagAware pool
     App\Cache\ContentCacheManager:
         arguments:

@@ -7,3 +7,5 @@ services:
         public: true
     App\Adapter\Storyblok\StoryblokAdapter:
         public: true
+    App\Adapter\Sanity\SanityAdapter:
+        public: true
