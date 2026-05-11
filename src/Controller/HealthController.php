@@ -50,6 +50,7 @@ class HealthController extends AbstractController
         // SaaS adapters - assumed up (no local probe possible without real tokens)
         $statuses['contentful'] = 'up';
         $statuses['storyblok'] = 'up';
+        $statuses['sanity'] = 'up';
 
         $upCount = count(array_filter($statuses, fn ($s) => 'up' === $s));
         $total = count($statuses);

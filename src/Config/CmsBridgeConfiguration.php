@@ -23,6 +23,8 @@ class CmsBridgeConfiguration implements ConfigurationInterface
                             ->scalarNode('base_url')->defaultNull()->end()
                             ->scalarNode('space_id')->defaultNull()->end()
                             ->scalarNode('access_token')->defaultNull()->end()
+                            ->scalarNode('project_id')->defaultNull()->end()
+                            ->scalarNode('dataset')->defaultNull()->end()
                         ->end()
                     ->end()
                 ->end()

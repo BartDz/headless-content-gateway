@@ -8,6 +8,9 @@ adapters:
     access_token: "%env(CONTENTFUL_TOKEN)%"
   storyblok:
     access_token: "%env(STORYBLOK_TOKEN)%"
+  sanity:
+    project_id: "%env(SANITY_PROJECT_ID)%"
+    dataset: "%env(default::SANITY_DATASET)%"
 
 content_types:
   article:
